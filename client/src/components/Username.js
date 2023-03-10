@@ -1,12 +1,31 @@
-import React from 'react'
-import {Link} from 'react-router-dom'
-import avatar from '../assets/avt.jpg'
+import React from 'react';
+import {Link} from 'react-router-dom';
+import avatar from '../assets/avt.jpg';
+import {Toaster} from 'react-hot-toast';
+import {useFormik} from 'formik';
+import {usernameValidate} from '../helper/validate';
 
 import styles from '../styles/Username.module.css'
 
 export default function Username() {
+
+  const formik = useFormik({
+    initialValues: {
+      username:''
+    },
+    validate: usernameValidate,
+    validateOnBlur: false,
+    validateOnChanges: false,
+    onSubmit: async values =>{
+      console.log(values)
+    }
+  })
+
   return (
     <div className='container mx-auto'>
+
+      <Toaster position='top-center' reverseOder={false}></Toaster>
+
       <div className='flex justify-center items-center h-screen'>
         <div className={styles.glass}>
 
@@ -17,18 +36,23 @@ export default function Username() {
               </span>
           </div>
 
-          <form className='py-1'>
+          <form className='py-1' onSubmit={formik.handleSubmit}>
             <div className='profile flex justify-center'>
               <img src={avatar} className={styles.profile_img} alt="avatar"></img>
             </div>
 
             <div className='text-box flex flex-col items-center py-4'>
-              <input className={styles.textbox} type="text" placeholder='Username'/>
+              <input {...formik.getFieldProps('username')} className={styles.textbox} type="text" placeholder='Username'/>
               <button className={styles.btn} type="submit">Let's go</button>
             </div>
 
-            <div className='text-box py-4'>
-              <span className='text-gray-500'>Not a member? <Link className='text-red-500' to='/register'>Register now</Link></span>
+            <div className='text-box py-4 text-center'>
+              <span className='text-gray-500'>
+                Not a member? 
+                  <Link className='text-red-500' to='/register'>
+                  Register now
+                  </Link>
+              </span>
             </div>
           </form>
 
