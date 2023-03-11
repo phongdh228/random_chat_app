@@ -15,7 +15,7 @@ export default function Username() {
     },
     validate: usernameValidate,
     validateOnBlur: false,
-    validateOnChanges: false,
+    validateOnChange: false,
     onSubmit: async values =>{
       console.log(values)
     }
