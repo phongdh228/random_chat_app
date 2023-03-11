@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+import connect from './database/conn.js';
 
 const app = express();
 
@@ -17,6 +18,16 @@ app.get('/', (req, res) =>{
     res.status(201).json("Home GET request");
 });
 
-app.listen(port, ()=>{
-    console.log(`Server connection to http://localhost:${port}`);
-});
+/*start server only when have valid connection*/
+connect().then(() =>{
+    try{
+        app.listen(port, ()=>{
+            console.log(`Server connection to http://localhost:${port}`);
+        });
+    }
+    catch(err){
+        console.log("Cannot connect to server");
+    }
+}).catch(err =>{
+    console.log("Invalid database connection");
+})
