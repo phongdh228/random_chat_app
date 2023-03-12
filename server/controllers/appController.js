@@ -44,7 +44,8 @@ export async function register(req,res){
             })
         })
 
-        Promise.all([existUsername, existEmail]).then(()=>{
+        Promise.all([existUsername, existEmail])
+        .then(()=>{
             if(password){
                 bcrypt.hash(password, 10)
                 .then(hashedPassword => {
@@ -60,18 +61,20 @@ export async function register(req,res){
                     .then(result => res.status(201).send({msg: "User Registered Successfully"}))
                     .catch(error => res.status(500).send({ error}))
 
-                }).catch(error => {
+                })
+                .catch(error => {
                     return res.status(500).send({
                         error: "Unable to encrypt password"
                     })
                 })
             }
-        }).catch(error => {
-            return res.status(500).send("Somthing failed: " + error);
+        })
+        .catch(error => {
+            return res.status(500).send({error});
         })
 
     }catch(error){
-        return res.status(500).send(erorr);
+        return res.status(500).send(error);
     }
 }
 
@@ -111,11 +114,49 @@ export async function login(req,res){
 }
 
 export async function getUser(req,res){
-    res.json('getUser route');
+    
+    const {username} = req.params;
+
+    try{
+
+        if(!username) return res.status(501).send({error: "Invalid username"});
+
+        UserModel.findOne({username}, function(err, user){
+            if(err) return res.status(500).send({err});
+            if(!user) return res.status(501).send({err: "Couldn't find user"})
+
+            //remove password from getUser
+            const {password, ...rest} = Object.assign({},user.toJSON());
+
+            return res.status(201).send(rest);
+        })
+
+    }catch(error){
+        return res.status(404).send({erorr: "Cannot find user data"});
+    }
 }
 
 export async function updateUser(req,res){
-    res.json('updateUser route');
+    try{
+
+        const id = req.query.id;
+        if(id){
+
+            const body = req.body;
+            //update date
+            UserModel.updateOne({_id:id}, body, function(err, data){
+                if(err) throw err;
+
+                return res.status(201).send({msg: "Record updated successfully"})
+            });
+
+        }else{
+            return res.status(401).send({erorr: "User not found"});
+        }
+
+    }catch(error){
+        return res.status(401).send({erorr});
+    }
 }
 
 export async function generateOTP(req,res){
