@@ -1,7 +1,58 @@
-
+import UserModel from '../model/User.model.js';
+import bcrypt from 'bcrypt';
 
 export async function register(req,res){
-    res.json('register route');
+    try{
+        const {username, password, profile, email}= req.body;
+
+        //check the exsiting user
+        const existUsername = new Promise((resolve, reject) =>{
+            UserModel.findOne({username}, function(err, user){
+                if(err) reject(new Error(err));
+                if(user) reject({error: "Please use unique username"});
+
+                resolve();
+            })
+        })
+
+        const existEmail = new Promise((resolve,reject) =>{
+            UserModel.findOne({email}, function(err, email){
+                if(err) reject(new Error(err));
+                if(email) reject({error: "Please use unique email"});
+
+                resolve();
+            })
+        })
+
+        Promise.all([existUsername, existEmail]).then(()=>{
+            if(password){
+                bcrypt.hash(password, 10)
+                .then(hashedPassword => {
+
+                    const user = new UserModel({
+                        username,
+                        password: hashedPassword,
+                        profile: profile || '',
+                        email
+                    })
+
+                    user.save()
+                    .then(result => res.status(201).send({msg: "User Registered Successfully"}))
+                    .catch(error => res.status(500).send({ error}))
+
+                }).catch(error => {
+                    return res.status(500).send({
+                        error: "Unable to encrypt password"
+                    })
+                })
+            }
+        }).catch(error => {
+            return res.status(500).send("Somthing failed: " + error);
+        })
+
+    }catch(error){
+        return res.status(500).send("This might failed " + error);
+    }
 }
 
 export async function login(req,res){
