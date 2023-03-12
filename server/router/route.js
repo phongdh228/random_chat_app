@@ -2,6 +2,7 @@ import {Router} from 'express';
 const router = Router();
 
 import * as controller from '../controllers/appController.js';
+import Auth from '../middleware/auth.js';
 
 /*POST method*/
 router.route('/register').post(controller.register);

@@ -26,30 +26,30 @@ export async function register(req,res){
         const {username, password, profile, email}= req.body;
 
         //check the exsiting user
-        const existUsername = new Promise((resolve, reject) =>{
+        const existUsername = await new Promise((resolve, reject) =>{
             UserModel.findOne({username}, function(err, user){
                 if(err) reject(new Error(err));
                 if(user) reject({error: "Please use unique username"});
 
                 resolve();
             })
-        })
+        });
 
-        const existEmail = new Promise((resolve,reject) =>{
+        const existEmail = await new Promise((resolve,reject) =>{
             UserModel.findOne({email}, function(err, email){
                 if(err) reject(new Error(err));
                 if(email) reject({error: "Please use unique email"});
 
                 resolve();
             })
-        })
+        });
 
         Promise.all([existUsername, existEmail])
         .then(()=>{
             if(password){
                 bcrypt.hash(password, 10)
                 .then(hashedPassword => {
-
+                   
                     const user = new UserModel({
                         username,
                         password: hashedPassword,
@@ -139,12 +139,14 @@ export async function getUser(req,res){
 export async function updateUser(req,res){
     try{
 
-        const id = req.query.id;
-        if(id){
+        // const id = req.query.id;
+        const {userId} = req.user;
+
+        if(userId){
 
             const body = req.body;
             //update date
-            UserModel.updateOne({_id:id}, body, function(err, data){
+            UserModel.updateOne({_id: userId}, body, function(err, data){
                 if(err) throw err;
 
                 return res.status(201).send({msg: "Record updated successfully"})
