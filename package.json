@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "openssl": "^2.0.0",
     "react-router-dom": "^6.8.2"
   }
 }

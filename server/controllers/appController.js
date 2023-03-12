@@ -1,5 +1,25 @@
 import UserModel from '../model/User.model.js';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import ENV from '../config.js';
+
+/*middleware for verify user */
+export async function verifyUser(req, res, next) {
+    try{
+
+        const {username} = req.method == "GET" ? req.query : req.body;
+
+        //check if user exists
+        let exist = await UserModel.findOne({username});
+        if(!exist) {
+            return res.status(404).send({error: "User not found"});
+        }
+        next();
+
+    }catch(error){
+        return res.status(404).send({error: "Authentication Error"})
+    }
+}
 
 export async function register(req,res){
     try{
@@ -51,12 +71,43 @@ export async function register(req,res){
         })
 
     }catch(error){
-        return res.status(500).send("This might failed " + error);
+        return res.status(500).send(erorr);
     }
 }
 
 export async function login(req,res){
-    res.json('login route');
+   const {username, password} = req.body;
+
+   try{
+    UserModel.findOne({username})
+        .then(user => {
+            bcrypt.compare(password, user.password)
+            .then(passwordCheck => {
+                if(!passwordCheck) return res.status(400).send({error:"Dont have password"})
+
+                //create JWT token
+                const token = jwt.sign({
+                    userId: user._id,
+                    username: user.username
+                }, ENV.JWT_SECRET_KEY, {expiresIn: "24h"});
+
+                return res.status(200).send({
+                    msg: "Login successful",
+                    username: user.username,
+                    token
+                });
+
+            })
+            .catch(error => {
+                return res.status(400).send({erorr: "Password is incorrect"});
+            });
+        })
+        .catch(error => {
+            return res.status(404).send({erorr: "User not found"});
+        })
+   }catch(error){
+    return res.status(500).send(erorr);
+   }
 }
 
 export async function getUser(req,res){
