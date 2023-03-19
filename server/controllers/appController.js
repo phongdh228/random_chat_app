@@ -187,5 +187,33 @@ export async function createResetSession(req,res){
 }
 
 export async function resetPassword(req,res){
-    res.json('resetPassword route');
+    try{
+        const {username, password} = req.body;
+
+        try{
+
+            UserModel.findOne({username})
+                .then(user => {
+                    bcrypt.hash(password, 10)
+                        .then(hashedPassword => {
+                            UserModel.updateOne({username: user.username},{ password: hashedPassword}, function(err,data) {
+                                if(err) throw err;
+                                return res.status(201).send({msg: "Record updated"})
+                            });
+                        })
+                        .catch(e => {
+                            return res.status(500).send({error: "Unable to hash password"});
+                        });
+                })
+                .catch(error => {
+                    return res.status(404).send({error: "Username not found"});
+                })
+
+        }catch(error){
+            return res.status(500).send({error});
+        }
+
+    }catch(err){
+        return res.status(401).send({err});
+    }
 }
