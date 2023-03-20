@@ -10,7 +10,7 @@ import styles from '../styles/Username.module.css'
 
 export default function Register() {
 
-  const useNavigate = useNavigate();
+  const navigate = useNavigate();
   const [file, setFile] = useState();
 
   const formik = useFormik({
