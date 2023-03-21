@@ -1,4 +1,5 @@
 import {Navigate} from 'react-router-dom'
+import { useAuthStore } from '../store/store';
 
 export const AuthorizeUser = ({children}) => {
     const token = localStorage.getItem('token');
@@ -9,7 +10,7 @@ export const AuthorizeUser = ({children}) => {
 }
 
 export const ProtectRoute = ({ children }) =>{
-    const username = userAuthStore.getState().username;
+    const username = useAuthStore.getState().username;
     if(!username) {
         return <Navigate to={'/'} replace={true}></Navigate>
     }

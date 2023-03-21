@@ -1,8 +1,8 @@
-import React from 'react';
-import {Toaster} from 'react-hot-toast';
+import React, { useEffect, useState } from 'react';
+import toast, {Toaster} from 'react-hot-toast';
 import {useAuthStore} from '../store/store';
 import {generateOTP, verifyOTP} from '../helper/helper'
-import {userNavigate} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 
 import styles from '../styles/Username.module.css'
 
@@ -10,7 +10,7 @@ export default function Recovery() {
 
   const {username} = useAuthStore(state => state.auth)
   const [OTP, setOTP] = useState();
-  const navigate = userNavigate()
+  const navigate = useNavigate()
 
   useEffect(()=>{
     generateOTP(username).then((OTP) =>{
