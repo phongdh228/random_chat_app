@@ -40,9 +40,6 @@ export default function Password() {
     }
   })
 
-  if(isLoading) return <h1 className='text-2xl font-bold'>Loading...</h1>
-  if(serverError) return <div className='text-xl text-red-500'>{serverError.message}</div>
-
   return (
     <div className='container mx-auto'>
 

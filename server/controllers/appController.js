@@ -75,7 +75,7 @@ export async function register(req,res){
         })
 
     }catch(error){
-        return res.status(500).send(error);
+        return res.status(500).send(error.response.data);
     }
 }
 
@@ -180,8 +180,7 @@ export async function verifyOTP(req,res){
 
 export async function createResetSession(req,res){
     if(req.app.locals.resetSession){
-        req.app.locals.resetSession=false;
-        return res.status(201).send({msg: "Access Granted"})
+        return res.status(201).send({flag: req.app.locals.resetSessions})
     }
     return res.status(440).send({error: "Session Expired"});
 }

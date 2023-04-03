@@ -1,5 +1,5 @@
 import axios from 'axios';
-import  jwt_decoder from 'jwt_decode';
+import  jwt_decoder from "jwt-decode";
 
 axios.defaults.baseURL = process.env.REACT_APP_SERVER_DOMAIN
 
