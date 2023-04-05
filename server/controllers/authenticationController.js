@@ -4,15 +4,17 @@ import jwt from 'jsonwebtoken';
 import ENV from '../config.js';
 import otpGenerator from 'otp-generator'
 
-import pool from './../database/conn.js'
+import client from '../database/conn.js'
 
 /*middleware for verify user */
 export async function verifyUser(req, res, next) {
     try{
+        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
         const {username} = req.method == "GET" ? req.query : req.body;
 
         //check if user exists
+        console.log(username);
         let exist = await UserModel.findOne({username});
         if(!exist) {
             return res.status(404).send({error: "User not found"});
@@ -116,38 +118,47 @@ export async function login(req,res){
    }
 }
 
-export async function getAllUsers(req,res){
-    
-    
-    try{
-       console.log("before getAllUsers")
-       const allUsers = await pool.query(`SELECT * FROM users`)
-       console.log("after getAllUsers")
-       console.log(allUsers)
-       res.json(allUsers);
+// export async function getAllUsers(req,res){    
+//     try{
+//        console.log("before getAllUsers")
+//        const allUsers = await client.query(`SELECT * FROM users`)
+//        console.log("after getAllUsers")
+//        console.log(allUsers)
+//        res.json(allUsers);
 
-    }catch(error){
-        return res.status(404).send({error: "Cannot find any user data"});
-    }
-}
+//     }catch(error){
+//         return res.status(404).send({error: "Cannot find any user data"});
+//     }
+// }
+
+// export async function testPOSTMethod(req,res){    
+//     try{
+//        const descriptions = req.body;
+//        console.log(descriptions);
+//        res.json(descriptions);
+
+//     }catch(error){
+//         return res.status(404).send({error: "Cannot find any data"});
+//     }
+// }
 
 export async function getUser(req,res){
     
     const {username} = req.params;
 
     try{
-
         if(!username) return res.status(501).send({error: "Invalid username"});
 
-        UserModel.findOne({username}, function(err, user){
-            if(err) return res.status(500).send({err});
-            if(!user) return res.status(501).send({err: "Couldn't find user"})
+        client.connect((error)=>{
+            if(error){
+                console.error('Error connecting to the database:', error.stack);
+            } 
+        });
 
-            //remove password from getUser
-            const {password, ...rest} = Object.assign({},user.toJSON());
-
-            return res.status(201).send(rest);
-        })
+        const userInfo = await client.query(`SELECT * FROM users WHERE username = '${username}'`);
+        client.end();
+        
+        return res.status(201).send(userInfo.rows);
 
     }catch(error){
         return res.status(404).send({erorr: "Cannot find user data"});
