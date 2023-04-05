@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 import ENV from '../config.js';
 import otpGenerator from 'otp-generator'
 
+import pool from './../database/conn.js'
+
 /*middleware for verify user */
 export async function verifyUser(req, res, next) {
     try{
@@ -112,6 +114,21 @@ export async function login(req,res){
    }catch(error){
     return res.status(500).send(erorr);
    }
+}
+
+export async function getAllUsers(req,res){
+    
+    
+    try{
+       console.log("before getAllUsers")
+       const allUsers = await pool.query(`SELECT * FROM users`)
+       console.log("after getAllUsers")
+       console.log(allUsers)
+       res.json(allUsers);
+
+    }catch(error){
+        return res.status(404).send({error: "Cannot find any user data"});
+    }
 }
 
 export async function getUser(req,res){

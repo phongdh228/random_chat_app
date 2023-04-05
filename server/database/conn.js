@@ -1,40 +1,40 @@
-// import mongoose from "mongoose";
+// import pkg from 'pg';
 
-// import { MongoMemoryServer } from "mongodb-memory-server";
+// const {Client} = pkg;
 
 // async function connect(){
-//     const mongodb = await MongoMemoryServer.create();
-//     const getUri = mongodb.getUri();
+//         try{
+//         const client = new Client({
+//             user: process.env.PGUSER,
+//             host: process.env.PGHOST,
+//             database: process.env.PGDATABASE,
+//             password: process.env.PGPASSWORD,
+//             port: process.env.PGPORT
+//         });
 
-//     const db = await mongoose.connect(getUri);
-//     console.log("Database connected");
-//     return db;
-// }
+//         await client.connect();
+//         console.log('Database connection established');
+//         return client;
+//     }
+//     catch(error){
+//             console.log(error);
+//         }
+//     }
+    
+//     export default connect;
+import pkg from 'pg';
+import  dotenv from 'dotenv';
+dotenv.config();
 
-// export default connect;
+const Pool = pkg.Pool;
 
-import { Client } from 'pg';
+const pool = new Pool({
+    user: process.env.PGUSER,
+    host: process.env.PGHOST,
+    database: process.env.PGDATABASE,
+    password: process.env.PGPASSWORD,
+    port: process.env.PGPORT
+});
 
-const dotenv = require('dotenv');
-dotenv.config()
-
-async function connect(){
-    try{
-        const client = new Client({
-            user: process.env.PGUSER,
-            host: process.env.PGHOST,
-            database: process.env.PGDATABASE,
-            password: process.env.PGPASSWORD,
-            port: process.env.PGPORT
-        });
-
-        await client.connect();
-        console.log('Database connection established');
-        return client;
-    }
-    catch(error){
-        console.log(error);
-    }
-}
-
-export default connect;
+export default pool;
+// module.exports =  pool;
