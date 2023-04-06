@@ -7,18 +7,15 @@ import otpGenerator from 'otp-generator'
 import pool from '../database/conn.js'
 import  dotenv from 'dotenv';
 
+const saltRounds = 10;
 dotenv.config();
 
 /*middleware for verify user */
 export async function verifyUser(req, res, next) {
     try{
-        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-
         const {username} = req.method == "GET" ? req.query : req.body;
 
-        //check if user exists
-        console.log(username);
-        let exist = await UserModel.findOne({username});
+        let exist = await pool.query(`SELECT * FROM users WHERE username = '${username}'`)
         if(!exist) {
             return res.status(404).send({error: "User not found"});
         }
@@ -45,7 +42,7 @@ export async function register(req,res){
 
         if (isUnique){
             if(password){
-                bcrypt.hash(password, 10, (err, hashedPassword) =>{
+                bcrypt.hash(password, saltRounds, (err, hashedPassword) =>{
                     pool.query(`INSERT INTO users (username, password, email, fullname, birthday, is_male, is_active) VALUES ('${username}','${hashedPassword}','${email}','${fullname}','${birthday}','${is_male}','${is_active}')`)
                 })
             }
@@ -63,13 +60,19 @@ export async function login(req,res){
    const {username, password} = req.body;
 
    try{
-    UserModel.findOne({username})
-        .then(user => {
-            bcrypt.compare(password, user.password)
-            .then(passwordCheck => {
-                if(!passwordCheck) return res.status(400).send({error:"Dont have password"})
+        const user = await pool.query(`SELECT username, password FROM users WHERE username = '${username}'`)
 
-                //create JWT token
+        //check if username exists
+        if(user.rows.length == 0)  return res.status(404).send({error: "User not found"})
+        
+        else {
+            //compare password with the one stored in database
+            const isMatch = await bcrypt.compare(password, user.rows[0].password)
+            console.log(isMatch)
+
+            if(isMatch){
+
+                //create jwt token
                 const token = jwt.sign({
                     userId: user._id,
                     username: user.username
@@ -80,43 +83,15 @@ export async function login(req,res){
                     username: user.username,
                     token
                 });
-
-            })
-            .catch(error => {
-                return res.status(400).send({erorr: "Password is incorrect"});
-            });
-        })
-        .catch(error => {
-            return res.status(404).send({error: "User not found"});
-        })
+            }
+            else{
+                return res.status(400).send({error: "Password is incorrect"});
+            }
+        }
    }catch(error){
-    return res.status(500).send(error);
+        return res.status(500).send(error.message);
    }
 }
-
-// export async function getAllUsers(req,res){    
-//     try{
-//        console.log("before getAllUsers")
-//        const allUsers = await client.query(`SELECT * FROM users`)
-//        console.log("after getAllUsers")
-//        console.log(allUsers)
-//        res.json(allUsers);
-
-//     }catch(error){
-//         return res.status(404).send({error: "Cannot find any user data"});
-//     }
-// }
-
-// export async function testPOSTMethod(req,res){    
-//     try{
-//        const descriptions = req.body;
-//        console.log(descriptions);
-//        res.json(descriptions);
-
-//     }catch(error){
-//         return res.status(404).send({error: "Cannot find any data"});
-//     }
-// }
 
 export async function getUser(req,res){
     
