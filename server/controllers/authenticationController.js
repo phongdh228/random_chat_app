@@ -28,13 +28,17 @@ export async function verifyUser(req, res, next) {
 
 export async function register(req,res){
     try{
-        const {username, password, email, fullname, birthday, is_male, is_active}= req.body;
+        const {username, password, email, fullname, birthday, is_male, is_active, place_of_birth, current_place, zodiac_sign}= req.body;
         const isUnique = await checkForUniqFields(username, email);
+
+        if(place_of_birth == undefined) place_of_birth = ''
+        if(current_place == undefined) current_place = ''
+        if(zodiac_sign == undefined) zodiac_sign = getZodiacSign(birthday);
 
         if (isUnique){
             if(password){
                 bcrypt.hash(password, saltRounds, (err, hashedPassword) =>{
-                    pool.query(`INSERT INTO users (username, password, email, fullname, birthday, is_male, is_active) VALUES ('${username}','${hashedPassword}','${email}','${fullname}','${birthday}','${is_male}','${is_active}')`)
+                    pool.query(`INSERT INTO users (username, password, email, fullname, birthday, is_male, is_active, place_of_birth, current_place, zodiac_sign) VALUES ('${username}','${hashedPassword}','${email}','${fullname}','${birthday}','${is_male}','${is_active}','${place_of_birth}','${current_place}','${zodiac_sign}')`)
                 })
             }
             return res.status(200).send({msg: "User created successfully"});
@@ -107,7 +111,7 @@ export async function updateUser(req,res){
         if(userId){
             const body = req.body;
 
-            const { username, password, email, fullname, birthday, is_male, is_active } = req.body;
+            const { username, password, email, fullname, birthday, is_male, is_active, place_of_birth, current_place, zodiac_sign } = req.body;
 
             let queryCommand = 'UPDATE users SET';
             let numFieldsUpdated = 0;
@@ -145,6 +149,21 @@ export async function updateUser(req,res){
 
             if (is_active !== undefined) {
                 queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} is_active = ${is_active}`;
+                numFieldsUpdated++;
+            }
+
+            if (place_of_birth !== undefined) {
+                queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} place_of_birth = '${place_of_birth}'`;
+                numFieldsUpdated++;
+            }
+
+            if (current_place !== undefined) {
+                queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} current_place = '${current_place}'`;
+                numFieldsUpdated++;
+            }
+
+            if (zodiac_sign !== undefined) {
+                queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} zodiac_sign = '${zodiac_sign}'`;
                 numFieldsUpdated++;
             }
 
@@ -220,4 +239,41 @@ async function checkForUniqFields(username, email){
 async function findOneUserByUserName(username){
     const user = await pool.query(`SELECT * FROM users WHERE username = '${username}'`)
     return user.rows[0]
+}
+
+function getZodiacSign(birthday) {
+    const [year, month, day] = birthday.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
+  
+    if (isNaN(date.getTime())) {
+        throw new Error('Invalid date');
+    }
+  
+    const monthDay = month * 100 + day;
+  
+    if (monthDay >= 321 && monthDay <= 419) {
+        return 'Aries';
+    } else if (monthDay >= 420 && monthDay <= 520) {
+        return 'Taurus';
+    } else if (monthDay >= 521 && monthDay <= 620) {
+        return 'Gemini';
+    } else if (monthDay >= 621 && monthDay <= 722) {
+        return 'Cancer';
+    } else if (monthDay >= 723 && monthDay <= 822) {
+        return 'Leo';
+    } else if (monthDay >= 823 && monthDay <= 922) {
+        return 'Virgo';
+    } else if (monthDay >= 923 && monthDay <= 1022) {
+        return 'Libra';
+    } else if (monthDay >= 1023 && monthDay <= 1121) {
+        return 'Scorpio';
+    } else if (monthDay >= 1122 && monthDay <= 1221) {
+        return 'Sagittarius';
+    } else if ((monthDay >= 1222 && monthDay <= 1231) || (monthDay >= 101 && monthDay <= 119)) {
+        return 'Capricorn';
+    } else if (monthDay >= 120 && monthDay <= 218) {
+        return 'Aquarius';
+    } else {
+        return 'Pisces';
+    }
 }
