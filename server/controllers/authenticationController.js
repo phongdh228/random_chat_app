@@ -101,26 +101,67 @@ export async function getUser(req,res){
 
 export async function updateUser(req,res){
     try{
-
-        // const id = req.query.id;
-        const {userId} = req.user;
+        const userId = req.query.id;
+        console.log(userId);
 
         if(userId){
-
             const body = req.body;
-            //update date
-            UserModel.updateOne({_id: userId}, body, function(err, data){
-                if(err) throw err;
 
-                return res.status(201).send({msg: "Record updated successfully"})
+            const { username, password, email, fullname, birthday, is_male, is_active } = req.body;
+
+            let queryCommand = 'UPDATE users SET';
+            let numFieldsUpdated = 0;
+
+            if (username !== undefined) {
+                queryCommand += ` username = '${username}'`;
+                numFieldsUpdated++;
+            }
+
+            if (password !== undefined) {
+                const hashedPassword = bcrypt.hashSync(password, saltRounds);
+                queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} password = '${hashedPassword}'`;
+                numFieldsUpdated++;
+            }
+
+            if (email !== undefined) {
+                queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} email = '${email}'`;
+                numFieldsUpdated++;
+            }
+
+            if (fullname !== undefined) {
+                queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} fullname = '${fullname}'`;
+                numFieldsUpdated++;
+            }
+
+            if (birthday !== undefined) {
+                queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} birthday = '${birthday}'`;
+                numFieldsUpdated++;
+            }
+
+            if (is_male !== undefined) {
+                queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} is_male = ${is_male}`;
+                numFieldsUpdated++;
+            }
+
+            if (is_active !== undefined) {
+                queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} is_active = ${is_active}`;
+                numFieldsUpdated++;
+            }
+
+            queryCommand += ` WHERE id = ${userId}`;
+
+            pool.query(queryCommand)
+            .then(() => {
+                return res.status(200).send({msg: "Record updated successfully"})
+            })
+            .catch((error) => {
+                return res.status(401).send(error.message);
             });
-
         }else{
             return res.status(401).send({erorr: "User not found"});
         }
-
     }catch(error){
-        return res.status(401).send({erorr});
+        return res.status(401).send(error.message);
     }
 }
 
@@ -163,7 +204,7 @@ export async function resetPassword(req,res){
             return res.status(201).send({msg: "Password reset successfully"})
         }
      }catch(err){
-        return res.status(401).send({err});
+        return res.status(401).send(err.message);
     }
 }
 
