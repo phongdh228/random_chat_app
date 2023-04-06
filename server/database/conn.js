@@ -26,9 +26,9 @@ import pkg from 'pg';
 import  dotenv from 'dotenv';
 dotenv.config();
 
-const {Client} = pkg;
+const Pool = pkg.Pool;
 
-const client = new Client({
+const pool = new Pool({
     user: process.env.PGUSER,
     host: process.env.PGHOST,
     database: process.env.PGDATABASE,
@@ -36,4 +36,4 @@ const client = new Client({
     port: process.env.PGPORT
 });
 
-export default client;
+export default pool;
