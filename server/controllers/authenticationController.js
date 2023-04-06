@@ -26,15 +26,6 @@ export async function verifyUser(req, res, next) {
     }
 }
 
-async function checkForUniqFields(username, email){
-    const checkForUsername = await pool.query(`SELECT * FROM users WHERE username = '${username}'`)
-    const checkForEmail = await pool.query(`SELECT * FROM users WHERE email = '${email}'`)
-
-    if(checkForUsername.rows.length == 0 || checkForEmail.rows.length == 0) return true;
-    return false;
-
-}
-
 export async function register(req,res){
     try{
         const {username, password, email, fullname, birthday, is_male, is_active}= req.body;
@@ -60,15 +51,14 @@ export async function login(req,res){
    const {username, password} = req.body;
 
    try{
-        const user = await pool.query(`SELECT username, password FROM users WHERE username = '${username}'`)
+        const user = await findOneUserByUserName(username)
 
         //check if username exists
-        if(user.rows.length == 0)  return res.status(404).send({error: "User not found"})
+        if(user.length == 0)  return res.status(404).send({error: "User not found"})
         
         else {
             //compare password with the one stored in database
-            const isMatch = await bcrypt.compare(password, user.rows[0].password)
-            console.log(isMatch)
+            const isMatch = await bcrypt.compare(password, user.password)
 
             if(isMatch){
 
@@ -100,9 +90,9 @@ export async function getUser(req,res){
     try{
         if(!username) return res.status(501).send({error: "Invalid username"});
 
-        const userInfo = await pool.query(`SELECT * FROM users WHERE username = '${username}'`);
+        const userInfo = await findOneUserByUserName(username)
         
-        return res.status(201).send(userInfo.rows);
+        return res.status(201).send(userInfo);
 
     }catch(error){
         return res.status(404).send({erorr: "Cannot find user data"});
@@ -161,30 +151,32 @@ export async function resetPassword(req,res){
     try{
         const {username, password} = req.body;
 
-        try{
+        const user = await findOneUserByUserName(username)
 
-            UserModel.findOne({username})
-                .then(user => {
-                    bcrypt.hash(password, 10)
-                        .then(hashedPassword => {
-                            UserModel.updateOne({username: user.username},{ password: hashedPassword}, function(err,data) {
-                                if(err) throw err;
-                                return res.status(201).send({msg: "Record updated"})
-                            });
-                        })
-                        .catch(e => {
-                            return res.status(500).send({error: "Unable to hash password"});
-                        });
-                })
-                .catch(error => {
-                    return res.status(404).send({error: "Username not found"});
-                })
-
-        }catch(error){
-            return res.status(500).send({error});
+        if (!user) return res.status(404).send({error: "Username not found"});
+        else{
+            bcrypt.hash(password, saltRounds, (err, hashedPassword) =>{
+                if(err) return res.status(500).send(err.message)
+                
+                pool.query(`UPDATE users SET password = '${hashedPassword}' WHERE username = '${username}'`)
+            })
+            return res.status(201).send({msg: "Password reset successfully"})
         }
-
-    }catch(err){
+     }catch(err){
         return res.status(401).send({err});
     }
+}
+
+async function checkForUniqFields(username, email){
+    const checkForUsername = await findOneUserByUserName(username)
+    const checkForEmail = await pool.query(`SELECT * FROM users WHERE email = '${email}'`)
+
+    if(checkForUsername.length == 0 || checkForEmail.rows.length == 0) return true;
+    return false;
+
+}
+
+async function findOneUserByUserName(username){
+    const user = await pool.query(`SELECT * FROM users WHERE username = '${username}'`)
+    return user.rows[0]
 }
