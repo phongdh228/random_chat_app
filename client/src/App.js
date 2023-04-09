@@ -9,6 +9,7 @@ import Profile from './components/Profile.js';
 import Recovery from './components/Recovery.js';
 import Register from './components/Register.js';
 import Reset from './components/Reset.js';
+import Video from './components/Video.js';
 
 import { AuthorizeUser, ProtectRoute} from './middleware/auth.js';
 
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
   {
     path: '/reset',
     element: <Reset></Reset>
+  },
+  {
+    path: '/video',
+    element: <Video></Video>
   }
 ]);
 
