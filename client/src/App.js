@@ -1,5 +1,6 @@
 import React from 'react'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
+import { makeStyles } from '@mui/styles';
 
 /*import all components */
 import Username from './components/Username.js';
@@ -14,6 +15,32 @@ import Video from './components/Video.js';
 import { AuthorizeUser, ProtectRoute} from './middleware/auth.js';
 
 /*root router */
+const useStyles = makeStyles((theme) => ({
+  // appBar: {
+  //   borderRadius: 15,
+  //   margin: '30px 100px',
+  //   display: 'flex',
+  //   flexDirection: 'row',
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   width: '600px',
+  //   border: '2px solid black',
+
+  //   [theme.breakpoints.down('xs')]: {
+  //     width: '90%',
+  //   },
+  // },
+  // image: {
+  //   marginLeft: '15px',
+  // },
+  wrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '100%',
+  },
+}));
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -45,11 +72,14 @@ const router = createBrowserRouter([
   },
   {
     path: '/video',
-    element: <Video></Video>
+    element: <div className={useStyles.wrapper}><Video></Video></div>
   }
 ]);
 
+
+
 export default function App() {
+
   return (
     <main>
       <RouterProvider router={router}></RouterProvider>

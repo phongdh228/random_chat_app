@@ -6,13 +6,14 @@ import router from './router/route.js';
 import {Server} from "socket.io"
 import { createServer } from 'http';
 
+import socketController from './controllers/videochatController.js'
+
 const app = express(); 
 const server = createServer(app); 
 const io = new Server(server, {
     cors: {
       origin: 'http://localhost:3000',
       methods: ["GET", "POST"],
-      allowedHeaders: ["my-custom-header"],
       credentials: true
     }
   });
@@ -31,17 +32,13 @@ app.use((req, res, next) => {
 app.use(morgan('tiny'));
 app.disable('x-powered-by');
 
-
-
 const port = 5000;
-
-// app.set('view engine', 'ejs')
-// app.use(express.static('public'))
 
 /*HTTP requests */
 app.get('/', (req, res) =>{
     res.status(201).json("Home GET request");
 });
+
 
 /*api request */
 app.use('/api', router)
@@ -49,6 +46,16 @@ app.use('/api', router)
 io.on("connection", (socket) =>{
     console.log(`User connected: ${socket.id}`)
     
+    socket.emit('me', socket.id)
+
+    socket.on('calluser',({userToCall, signalData, from, name}) =>{
+        io.to(userToCall).emit('calluser', {signal: signalData, from, name})
+    })
+
+    socket.on('answercall', (data) =>{
+        io.to(data.to).emit("callaccepted", data.signal)
+    })
+
     socket.on("join_room", (data) => {
         //console.log(data)
         socket.join(data)
@@ -64,23 +71,6 @@ io.on("connection", (socket) =>{
     });
 })
 
-
-/*start server only when have valid connection*/
-// connect().then(() =>{
-//     try{
-//         app.listen(port, ()=>{
-//             console.log(`Server connection to http://localhost:${port}`);
-//         });
-//     }
-//     catch(err){
-//         console.log("Cannot connect to server");
-//     }
-// }).catch(err =>{
-//     console.log("Invalid database connection");
-// })
-
 server.listen(port, ()=>{
     console.log(`Server connection to http://localhost:${port}`);
 });
-
-//  server.listen(port, '192.168.31.151')
