@@ -6,13 +6,11 @@ import router from './router/route.js';
 import {Server} from "socket.io"
 import { createServer } from 'http';
 
-import socketController from './controllers/videochatController.js'
-
 const app = express(); 
 const server = createServer(app); 
 const io = new Server(server, {
     cors: {
-      origin: 'http://localhost:3000',
+      origin: 'https://random-chat-app-19522009.herokuapp.com/',
       methods: ["GET", "POST"],
       credentials: true
     }
@@ -32,12 +30,7 @@ app.use((req, res, next) => {
 app.use(morgan('tiny'));
 app.disable('x-powered-by');
 
-const port = 5000;
-
-/*HTTP requests */
-app.get('/', (req, res) =>{
-    res.status(201).json("Home GET request");
-});
+const port = process.env.PORT || 5000
 
 
 /*api request */
