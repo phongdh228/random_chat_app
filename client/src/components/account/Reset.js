@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import toast, {Toaster} from 'react-hot-toast';
 import {useFormik} from 'formik';
-import {resetPasswordValidation} from '../helper/validate';
-import {resetPassword} from '../helper/helper'
-import {useAuthStore} from '../store/store';
+import {resetPasswordValidation} from '../../helper/validate';
+import {resetPassword} from '../../helper/helper'
+import {useAuthStore} from '../../store/store';
 import { useNavigate, Navigate } from 'react-router-dom';
-import useFetch from '../hooks/fetch.hook.js';
+import useFetch from '../../hooks/fetch.hook.js';
 
-import styles from '../styles/Username.module.css'
+import styles from '../../styles/Username.module.css'
 
 export default function Reset() {
 

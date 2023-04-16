@@ -56,19 +56,19 @@ io.on("connection", (socket) =>{
         io.to(data.to).emit("callaccepted", data.signal)
     })
 
-    socket.on("join_room", (data) => {
-        //console.log(data)
-        socket.join(data)
-    })
+    // socket.on("join_room", (data) => {
+    //     //console.log(data)
+    //     socket.join(data)
+    // })
 
-    socket.on("send_message", (data) =>{
-        socket.to(data.room).emit("receive_message", data)
-        //socket.broadcast.emit("receive_message", data)
-    })
+    // socket.on("send_message", (data) =>{
+    //     socket.to(data.room).emit("receive_message", data)
+    //     //socket.broadcast.emit("receive_message", data)
+    // })
 
-    socket.on("connect_error", (err) => {
-        console.log(`connect_error due to ${err.message}`);
-    });
+    // socket.on("connect_error", (err) => {
+    //     console.log(`connect_error due to ${err.message}`);
+    // });
 })
 
 server.listen(port, ()=>{

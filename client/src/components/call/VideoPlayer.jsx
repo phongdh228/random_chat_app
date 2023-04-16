@@ -2,7 +2,7 @@ import  React, { useContext }  from 'react';
 import { Grid, Paper, Typography  } from '@mui/material';
 import { makeStyles} from '@mui/styles';
 
-import { SocketContext } from '../Context';
+import { SocketContext } from '../../Context';
 
 
 const useStyles = makeStyles((theme) => ({

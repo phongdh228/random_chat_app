@@ -1,16 +1,16 @@
 import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import avatar from '../assets/avt.jpg';
+import avatar from '../../assets/avt.jpg';
 import toast, {Toaster} from 'react-hot-toast';
 import {useFormik} from 'formik';
-import useFetch from '../hooks/fetch.hook';
-import {profileValidation} from '../helper/validate';
-import covertToBase64 from '../helper/convert';
-import { useAuthStore } from '../store/store';
-import { updateUser } from '../helper/helper';
+import useFetch from '../../hooks/fetch.hook';
+import {profileValidation} from '../../helper/validate';
+import covertToBase64 from '../../helper/convert';
+import { useAuthStore } from '../../store/store';
+import { updateUser } from '../../helper/helper';
 
-import styles from '../styles/Username.module.css'
-import extend from '../styles/Profile.module.css';
+import styles from '../../styles/Username.module.css'
+import extend from '../../styles/Profile.module.css';
 
 export default function Profile() {
 

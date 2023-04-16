@@ -27,9 +27,7 @@ const ContextProvider = ({children}) => {
         setStream(currentStream);
 
         myVideo.current.srcObject = currentStream;
-      }).catch((error) => {
-        console.log('Error getting user media: ', error);
-      });
+      })
 
     socket.on('me', (id) => setMe(id));
 
@@ -49,9 +47,7 @@ const ContextProvider = ({children}) => {
   
       peer.on('stream', (currentStream) =>{
         userVideo.current.srcObject = currentStream;
-      }).catch((error) => {
-        console.log('Error getting user media: ', error);
-      });
+      })
   
       peer.signal(call.signal);
   
@@ -67,9 +63,7 @@ const ContextProvider = ({children}) => {
   
       peer.on('stream', (currentStream) =>{
         userVideo.current.srcObject = currentStream;
-      }).catch((error) => {
-        console.log('Error getting user media: ', error);
-      });
+      })
       
       socket.on('callaccepted', (signal) => {
         setCallAccepted(true);

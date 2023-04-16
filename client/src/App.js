@@ -3,14 +3,14 @@ import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 
 /*import all components */
-import Username from './components/Username.js';
-import Password from './components/Password.js';
-import PageNotFound from './components/PageNotFound.js';
-import Profile from './components/Profile.js';
-import Recovery from './components/Recovery.js';
-import Register from './components/Register.js';
-import Reset from './components/Reset.js';
-import Video from './components/Video.js';
+import Username from './components/account/Username.js';
+import Password from './components/account/Password.js';
+import PageNotFound from './components/account/PageNotFound.js';
+import Profile from './components/account/Profile.js';
+import Recovery from './components/account/Recovery.js';
+import Register from './components/account/Register.js';
+import Reset from './components/account/Reset.js';
+import Video from './components/call/Video.js';
 
 import { AuthorizeUser, ProtectRoute} from './middleware/auth.js';
 
