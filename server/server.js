@@ -44,7 +44,7 @@ app.get('/', (req, res) =>{
 app.use('/api', router)
 
 io.on("connection", (socket) =>{
-    console.log(`User connected: ${socket.id}`)
+    //console.log(`User connected: ${socket.id}`)
     
     socket.emit('me', socket.id)
 

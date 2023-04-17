@@ -1,5 +1,5 @@
 import React from 'react';
-import { io } from 'socket.io-client';
+//import { io } from 'socket.io-client';
 import { useEffect, useState } from 'react';
 
 import { Typography, AppBar } from '@mui/material';
@@ -9,9 +9,9 @@ import VideoPlayer from './VideoPlayer.jsx';
 import Sidebar from './Sidebar.jsx';
 import Notifications from './Notifications.jsx';
 
-const socket = io("http://localhost:5000", {
-  withCredentials: true,
-});
+// const socket = io("http://localhost:5000", {
+//   withCredentials: true,
+// });
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
