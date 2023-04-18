@@ -38,10 +38,6 @@ const router = createBrowserRouter([
     element: <ProtectRoute><Password/></ProtectRoute>
   },
   {
-    path: '/pagenotfound',
-    element: <PageNotFound></PageNotFound>
-  },
-  {
     path: '/profile',
     element: <AuthorizeUser><Profile/></AuthorizeUser>
   },
@@ -56,7 +52,11 @@ const router = createBrowserRouter([
   {
     path: '/video',
     element: <div className={useStyles.wrapper}><Video></Video></div>
-  }
+  },
+  {
+    path: '*',
+    element: <PageNotFound></PageNotFound>
+  },
 ]);
 
 
