@@ -12,7 +12,7 @@ import Register from './components/account/Register.js';
 import Reset from './components/account/Reset.js';
 import Video from './components/call/Video.js';
 
-import { AuthorizeUser, ProtectRoute} from './middleware/auth.js';
+import { AuthorizeUser, ProtectedRoute} from './middleware/auth.js';
 
 /*root router */
 const useStyles = makeStyles((theme) => ({
@@ -35,7 +35,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/password',
-    element: <ProtectRoute><Password/></ProtectRoute>
+    element: <ProtectedRoute><Password/></ProtectedRoute>
   },
   {
     path: '/profile',

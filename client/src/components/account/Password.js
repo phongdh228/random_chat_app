@@ -14,6 +14,7 @@ export default function Password() {
 
   const navigate = useNavigate();
   const {username} = useAuthStore(state => state.auth);
+  console.log(username, " ------------------------------")
   const [{isLoading, apiData, serverError}] = useFetch(`/user/${username}`);
 
   const formik = useFormik({
@@ -23,7 +24,9 @@ export default function Password() {
     validate: passwordValidate,
     validateOnBlur: false,
     validateOnChange: false,
+
     onSubmit: async values =>{
+
       let loginPromise = verifyPassword({username, password: values.password});
       toast.promise(loginPromise, {
         loading: 'Cheking...',

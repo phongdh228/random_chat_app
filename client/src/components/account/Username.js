@@ -17,14 +17,15 @@ export default function Username() {
     initialValues : {
       username : ''
     },
-    validate : usernameValidate,
-    validateOnBlur: false,
-    validateOnChange: false,
+    validate: usernameValidate,
     onSubmit : async values => {
       setUsername(values.username);
       navigate('/password');
-    }
-  })
+    },
+    validateOnBlur: false,
+    validateOnChange: false
+  });
+  
 
   return (
     <div className="container mx-auto">
