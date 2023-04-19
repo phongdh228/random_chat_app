@@ -12,9 +12,18 @@ dotenv.config();
 /*middleware for verify user */
 export async function verifyUser(req, res, next) {
     try{
+        console.log(req.body)
+
         const {username} = req.method == "GET" ? req.query : req.body;
 
+        console.log(username)
+
+        console.log( await pool.query(`SELECT * FROM users WHERE username = '${username}'`))
+
         let exist = await pool.query(`SELECT * FROM users WHERE username = '${username}'`)
+
+        console.log("Is exist: ", exist)
+
         if(!exist) {
             return res.status(404).send({error: "User not found"});
         }
