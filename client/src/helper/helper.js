@@ -43,7 +43,7 @@ export async function registerUser(credentials){
         let {username, email} = credentials;
 
         /**send email */
-        if(status === 201){
+        if(status === 200){
             await axios.post('/api/registerMail', {username, userEmail: email, text: msg})
         }
 

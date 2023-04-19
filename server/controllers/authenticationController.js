@@ -12,17 +12,9 @@ dotenv.config();
 /*middleware for verify user */
 export async function verifyUser(req, res, next) {
     try{
-        console.log(req.body)
-
         const {username} = req.method == "GET" ? req.query : req.body;
 
-        console.log(username)
-
-        console.log( await pool.query(`SELECT * FROM users WHERE username = '${username}'`))
-
         let exist = await pool.query(`SELECT * FROM users WHERE username = '${username}'`)
-
-        console.log("Is exist: ", exist)
 
         if(!exist) {
             return res.status(404).send({error: "User not found"});
@@ -36,7 +28,10 @@ export async function verifyUser(req, res, next) {
 
 export async function register(req,res){
     try{
-        const {username, password, email, fullname, birthday, is_male, is_active, place_of_birth, current_place, zodiac_sign}= req.body;
+        const {username, password, email}= req.body;
+
+        console.log(req.body)
+
         const isUnique = await checkForUniqFields(username, email);
 
         if(place_of_birth == undefined) place_of_birth = ''
@@ -52,7 +47,7 @@ export async function register(req,res){
             return res.status(200).send({msg: "User created successfully"});
         }
         else{
-            return res.status(500).send({error: "Username or email already being taken"})
+            return res.status(501).send({error: "Username or email already being taken"})
         }
     }catch(error){
         return res.status(500).send(error.message);

@@ -3,16 +3,13 @@ import MailGen from 'mailgen';
 
 import ENV from '../config.js';
 
-let nodeConfig = {
-    host: 'smtp.ethereal.email',
-    port: 587,
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
     auth: {
         user: ENV.EMAIL,
         pass: ENV.PASSWORD,
     }
-}
-
-let transporter = nodemailer.createTransport(nodeConfig);
+});
 
 let MailGenerator = new MailGen({
     theme: 'default',
@@ -28,7 +25,7 @@ export const registerMail = async (req,res) =>{
     var email = {
         body: {
             name: username,
-            intro: text ||"Welcome to Daily Tuition",
+            intro: text ||"Welcome to my app",
             outro: "Need help?" 
         }
     }
