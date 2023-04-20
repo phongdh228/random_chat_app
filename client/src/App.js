@@ -5,6 +5,7 @@ import { makeStyles } from '@mui/styles';
 /*import all components */
 import Username from './components/account/Username.js';
 import Password from './components/account/Password.js';
+import Home from './components/account/Home.js';
 import PageNotFound from './components/account/PageNotFound.js';
 import Profile from './components/account/Profile.js';
 import Recovery from './components/account/Recovery.js';
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <Username></Username>
+  },  
+  {
+    path: '/home',
+    element: <AuthorizeUser><Home/></AuthorizeUser>
   },  
   {
     path: '/register',

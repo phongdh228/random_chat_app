@@ -7,6 +7,8 @@ export const AuthorizeUser = ({children}) => {
     if(!token) {
         return <Navigate to={'/'} replace={true}></Navigate>
     }
+
+    return children;
 }
 
 export const ProtectedRoute = ({ children }) =>{
