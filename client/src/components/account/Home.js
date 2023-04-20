@@ -1,32 +1,17 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import Sidebar from '../Sidebar';
 
 export default function Homepage(){
-  const navigate = useNavigate();
-  
-  function userLogout() {
-    localStorage.removeItem('token');
-    navigate('/')
-  }
 
   return (
     <div className="homepage">
-      <div className="left-sidebar">
-        <div className="sidebar-header">
-          <Link to="/profile">Profile</Link>
-          <Link to="/settings">Settings</Link>
-        </div>
-        <div className="sidebar-footer">
-          <button onClick={userLogout} className='text-red-500' to='/'>
-                   Logout
-          </button>
-        </div>
-      </div>
+      <Sidebar/>
       <div className="main-content">
         <h1>Welcome to the Homepage</h1>
-        <button>Button 1</button>
-        <button>Button 2</button>
-        <button>Button 3</button>
+        <Link to="/video">Random Chat</Link>
+        <button>Let's Study</button><br></br>
+        <button>Make a Meeting</button>
       </div>
     </div>
   );
