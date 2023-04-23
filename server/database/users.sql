@@ -7,9 +7,11 @@ create TABLE users(
 	birthday date not null,
 	is_male boolean not null,
 	is_active boolean DEFAULT true,
+	first_login boolean DEFAULT true,
 	place_of_birth varchar(20),
 	current_place varchar(20),
 	zodiac_sign varchar(10),
+	match_point  int[] default '{}',
 	create_at timestamp NOT NULL DEFAULT NOW(),
 	update_at timestamp NOT NULL DEFAULT NOW(),
 

@@ -10,16 +10,29 @@ CREATE TABLE user_interests (
 );
 
 INSERT INTO interests (name) VALUES
-  ('art'),
-  ('book'),
-  ('drink'),
-  ('food'),
-  ('game'),
-  ('movie'),
-  ('music'),
-  ('songs'),
-  ('vehicle'),
-  ('travel');
+  ('Reading'),
+  ('Writing'),
+  ('Drawing'),
+  ('Photograph'),
+  ('Playing musical instruments'),
+  ('Singing'),
+  ('Dancing'),
+  ('Haging out'),
+  ('Acting'),
+  ('Watching films'),
+  ('Playing games'),
+  ('Playing sports'),
+  ('Hiking'),
+  ('Camping'),
+  ('Fishing'),
+  ('Cooking'),
+  ('Gardening'),
+  ('Traveling'),
+  ('Collecting'),
+  ('Sewing'),
+  ('DIY projects'),
+  ('Yoga and meditation'),
+  ('Attending social activities')
 
 select * from users
 

@@ -230,6 +230,35 @@ export async function resetPassword(req,res){
     }
 }
 
+export async function updateUserHobbies(req,res){
+    try{
+        const userId = req.query.id;
+        console.log(userId);
+        console.log(req.body)
+        if(userId){
+            let userOldInterest = await pool.query(`SELECT ARRAY_AGG(interest_id) as interest
+            FROM user_interests
+            WHERE user_id = ${userId}`)
+        
+            console.log(userOldInterest.rows[0].interest) //get interest list
+
+            var userMatchedPoint = "00000000000000000000000";
+            for (var i = 0; i < userOldInterest.rows[0].interest.length; i++){
+                userMatchedPoint.charAt(userOldInterest.rows[0].interest[i]) = "1";
+            }
+
+            res.send(userOldInterest.rows)
+            
+        }else{
+            return res.status(401).send({erorr: "User not found"});
+        }
+        
+
+     }catch(err){
+        return res.status(401).send(err.message);
+    }
+}
+
 async function checkForUniqFields(username, email){
     const checkForUsername = await findOneUserByUserName(username)
     const checkForEmail = await pool.query(`SELECT * FROM users WHERE email = '${email}'`)
@@ -279,4 +308,8 @@ function getZodiacSign(birthday) {
     } else {
         return 'Pisces';
     }
+}
+
+function convertMatchPointToString(matchPoint) {
+    return matchPoint.join("");
 }

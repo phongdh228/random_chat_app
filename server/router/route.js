@@ -19,6 +19,10 @@ router.route('/generateOTP').get(authController.verifyUser, localVariable, authC
 router.route('/verifyOTP').get(authController.verifyUser, authController.verifyOTP);
 router.route('/createResetSession').get(authController.createResetSession);
 
+router.route('/testInterest').get(authController.updateUserHobbies);
+
+
+
 /**VIDEO CHAT */
 router.route('/:room').get(callController.connectToRoom);
 router.route('/video').get(callController.video);
