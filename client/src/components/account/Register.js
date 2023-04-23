@@ -29,7 +29,7 @@ export default function Register() {
         success: <b>Register Successfully</b>,
         error: <b>Could not register</b>
       });
-      registerPromise.then(function(){navigate('/interest')})
+      registerPromise.then(function(){navigate('/hobby')})
     }
   })
 

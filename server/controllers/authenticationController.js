@@ -30,18 +30,19 @@ export async function register(req,res){
     try{
         const {username, password, email}= req.body;
 
-        console.log(req.body)
-
         const isUnique = await checkForUniqFields(username, email);
+        console.log(isUnique)
 
-        if(place_of_birth == undefined) place_of_birth = ''
-        if(current_place == undefined) current_place = ''
-        if(zodiac_sign == undefined) zodiac_sign = getZodiacSign(birthday);
-
+        // if(place_of_birth === 'undefined') place_of_birth = ''
+        // if(current_place === 'undefined') current_place = ''
+        // if(zodiac_sign === 'undefined') zodiac_sign = getZodiacSign(birthday);
+        console.log("ready to check for uniqueness")
         if (isUnique){
+            console.log("pass the unique check")
             if(password){
                 bcrypt.hash(password, saltRounds, (err, hashedPassword) =>{
                     pool.query(`INSERT INTO users (username, password, email, fullname, birthday, is_male, is_active, place_of_birth, current_place, zodiac_sign) VALUES ('${username}','${hashedPassword}','${email}','${fullname}','${birthday}','${is_male}','${is_active}','${place_of_birth}','${current_place}','${zodiac_sign}')`)
+                    console.log("Inserted data to database")
                 })
             }
             return res.status(200).send({msg: "User created successfully"});
@@ -259,13 +260,21 @@ export async function updateUserHobbies(req,res){
     }
 }
 
+export async function checkUsernamePasswordUniqness(req,res){
+    const {username, email} = req.body;
+    const checker = await checkForUniqFields(username, email)
+    if (!checker) return res.status(401).send({msg: "Username and Email are being used"});
+    return res.status(200).send({msg: "Username and Email are not being used"})
+    
+}
+
 async function checkForUniqFields(username, email){
-    const checkForUsername = await findOneUserByUserName(username)
+    const checkForUsername = findOneUserByUserName(username)
+
     const checkForEmail = await pool.query(`SELECT * FROM users WHERE email = '${email}'`)
 
-    if(checkForUsername.length == 0 || checkForEmail.rows.length == 0) return true;
+    if(checkForUsername === "undefined" ||checkForEmail.rows === "undefined" || checkForUsername.length==0 || checkForEmail.rows.length == 0) return true;
     return false;
-
 }
 
 async function findOneUserByUserName(username){

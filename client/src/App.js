@@ -12,7 +12,7 @@ import Recovery from './components/account/Recovery.js';
 import Register from './components/account/Register.js';
 import Reset from './components/account/Reset.js';
 import Video from './components/call/Video.js';
-import Interests from './components/account/Interests.js';
+import Hobby from './components/account/Hobby.js';
 
 import { AuthorizeUser, ProtectedRoute} from './middleware/auth.js';
 
@@ -60,8 +60,8 @@ const router = createBrowserRouter([
     element: <div className={useStyles.wrapper}><Video></Video></div>
   },
   {
-    path: '/interest',
-    element: <Interests></Interests>
+    path: '/hobby',
+    element: <Hobby></Hobby>
   },
   {
     path: '*',

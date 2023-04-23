@@ -23,21 +23,22 @@ const hobbiesList = [
   "Collecting",
   "Sewing",
   "DIY projects",
-  "Woodworking",
-  "Metalworking",
-  "Pottery",
   "Yoga and meditation",
   "Attending social activities"
 ];
 
-export default function Interests() {
+export default function Hobby() {
+
   const initialValues = {
     hobbies: []
   };
 
   const handleSubmit = (values) => {
     // Handle form submission
-    console.log(values);
+    console.log(values.hobbies); //values.hobbies print out array of hobbies
+    const selectedHobbies = hobbiesList.map(hobby => values.hobbies.includes(hobby) ? 1 : 0);
+    console.log(selectedHobbies);
+    //(23) [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0]
   };
 
   return (

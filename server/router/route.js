@@ -7,6 +7,7 @@ import Auth, {localVariable} from '../middleware/auth.js';
 import { registerMail } from '../controllers/mailer.js';
 
 /*POST method*/
+router.route('/checkUsernamePasswordUniqness').post(authController.checkUsernamePasswordUniqness);
 router.route('/register').post(authController.register);
 router.route('/registerMail').post(registerMail);
 router.route('/authenticate').post(authController.verifyUser, (req,res)=> res.end());
@@ -18,6 +19,7 @@ router.route('/user/:username').get(authController.getUser);
 router.route('/generateOTP').get(authController.verifyUser, localVariable, authController.generateOTP);
 router.route('/verifyOTP').get(authController.verifyUser, authController.verifyOTP);
 router.route('/createResetSession').get(authController.createResetSession);
+
 
 router.route('/testInterest').get(authController.updateUserHobbies);
 

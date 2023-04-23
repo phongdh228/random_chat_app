@@ -5,7 +5,7 @@ CREATE TABLE interests (
 
 CREATE TABLE user_interests (
   user_id INTEGER REFERENCES users(id),
-  interest_id INTEGER[] REFERENCES interests(id),
+  interest_id INTEGER REFERENCES interests(id),
   PRIMARY KEY (user_id, interest_id)
 );
 
