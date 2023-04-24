@@ -38,20 +38,24 @@ export async function getUser({username}){
 /**register User func */
 export async function registerUser(credentials){
     try{
-        console.log(credentials)
-        console.log("Calling API")
         let {username, email} = credentials;
 
-        const {data : {msg}, status} = await axios.post(`/api/checkUsernamePasswordUniqness`, {username, email});
+        const checker = await axios.post(`/api/checkUsernamePasswordUniqness`, {username, email});
         console.log("Call API success 01")
 
-        /**send email */
-        if(status === 200){
-            await axios.post('/api/registerMail', {username, userEmail: email, text: msg})
-            console.log("Call API success 02")
-        }
+        if(checker.status === 201){
+            const {data : {msg}, status} = await axios.post(`/api/register`, credentials);
+            console.log("Call API success 02" + msg)
+            
+            if(status === 200){
+                await axios.post('/api/registerMail', {username, userEmail: email, text: msg})
+            }
 
-        return Promise.resolve(msg);
+            return Promise.resolve(msg);
+        }
+        else if(checker.status === 200){
+            return Promise.reject({msg: "Username and Email were being used"})
+        }
     }catch(e){
         return Promise.reject({e});
     }

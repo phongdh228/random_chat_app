@@ -23,14 +23,12 @@ router.route('/createResetSession').get(authController.createResetSession);
 
 router.route('/testInterest').get(authController.updateUserHobbies);
 
-
-
 /**VIDEO CHAT */
 router.route('/:room').get(callController.connectToRoom);
 router.route('/video').get(callController.video);
 
 /*PUT method*/
-router.route('/updateUser').put(authController.updateUser);
+router.route('/updateUser').put(Auth, authController.updateUser);
 router.route('/resetPassword').put(authController.verifyUser, authController.resetPassword);
 
 export default router;
