@@ -53,13 +53,14 @@ export async function register(req,res){
 }
 
 export async function login(req,res){
-   const {username, password} = req.body;
+    console.log(req.body)
+    const {username, password} = req.body;
 
    try{
         const user = await findOneUserByUserName(username)
 
         //check if username exists
-        if(user.length == 0)  return res.status(404).send({error: "User not found"})
+        if(user.length == 0 || user ===  "undefined" )  return res.status(404).send({error: "User not found"})
         
         else {
             //compare password with the one stored in database
@@ -279,6 +280,12 @@ async function checkForUniqFields(username, email){
     if(checkForUsername === "undefined" ||checkForEmail.rows === "undefined" || checkForUsername.length==0 || checkForEmail.rows.length == 0) return true;
     return false;
 }
+
+// export async function findOneUserByUserNameTest(req,res){
+//     const {username} = req.body
+//     const user = await pool.query(`SELECT * FROM users WHERE username = '${username}'`)
+//     res.send(user.rows[0])
+// }
 
 async function findOneUserByUserName(username){
     const user = await pool.query(`SELECT * FROM users WHERE username = '${username}'`)
