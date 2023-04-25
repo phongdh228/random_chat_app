@@ -9,6 +9,7 @@ import { createServer } from 'http';
 import socketController from './controllers/videochatController.js'
 
 const app = express(); 
+app.use(cors())
 const server = createServer(app); 
 const io = new Server(server, {
     cors: {

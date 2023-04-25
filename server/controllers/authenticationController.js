@@ -69,7 +69,7 @@ export async function login(req,res){
 
                 //create jwt token
                 const token = jwt.sign({
-                    userId: user._id,
+                    userId: user.id,
                     username: user.username
                 }, ENV.JWT_SECRET_KEY, {expiresIn: "24h"});
 
@@ -89,7 +89,8 @@ export async function login(req,res){
 }
 
 export async function getUser(req,res){
-    
+    console.log(req.params)
+    console.log(req.body)
     const {username} = req.params;
 
     try{
@@ -106,6 +107,7 @@ export async function getUser(req,res){
 
 export async function updateUser(req,res){
     try{
+        console.log("start updating")
         const userId = req.query.id;
         console.log(userId);
 
