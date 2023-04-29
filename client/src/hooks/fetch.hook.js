@@ -12,6 +12,8 @@ export default function useFetch(query){
 
         const fetchData = async()=>{
             try{
+
+                console.log("--------QEEURY-----"+ query)
                 setData(prev => ({ ...prev, isLoading: false}));
 
                 const {username} =!query ? getUsername() : '';

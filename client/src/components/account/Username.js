@@ -19,6 +19,7 @@ export default function Username() {
     },
     validate: usernameValidate,
     onSubmit : async values => {
+      console.log("username: " + values.username);
       setUsername(values.username);
       navigate('/password');
     },

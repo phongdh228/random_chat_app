@@ -29,14 +29,17 @@ export default function Register() {
         success: <b>Register Successfully</b>,
         error: <b>Could not register</b>
       });
-      registerPromise.then(function(){navigate('/profile')})
+      
+      registerPromise.then(res =>{
+        console.log("Response is: ")
+        console.log(res)
+        let token = res.loginData.data.token;
+        console.log("REgister token: " + token);
+        localStorage.setItem('token', token);
+        navigate('/profile')
+      })
     }
   })
-
-  const onUpload = async e =>{
-    const base64 = covertToBase64(e.target.files[0]);
-    setFile(base64);
-  }
 
   return (
     <div className='container mx-auto'>
@@ -58,7 +61,6 @@ export default function Register() {
               <label htmlFor='profile'>
               <img src={avatar} className={styles.profile_img} alt="avatar"></img>
               </label>
-              <input onChange={onUpload} type="file" id='profile' name='profile'/>
             </div>
 
             <div className='text-box flex flex-col items-center py-4'>
