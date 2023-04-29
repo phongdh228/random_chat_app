@@ -5,6 +5,14 @@ import ENV from '../config.js';
 export default async function Auth(req, res, next) {
     try{
 
+        if (res.user !== undefined) {
+            console.log('===user property exists in res object and is not undefined')
+            //res.user = decodedToken;
+
+          } else {
+            console.log('user property does not exist in res object or is undefined')
+          }
+
         //access authorize header
         const token = req.headers.authorization.split(" ")[1];
 

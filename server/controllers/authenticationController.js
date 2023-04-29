@@ -19,9 +19,9 @@ export async function verifyUser(req, res, next) {
 
         let exist = await pool.query(`SELECT * FROM users WHERE username = '${username}'`)
 
-        console.log(exist.rows)
+        console.log("check exist: " + exist.rows)
 
-        if(!exist) {
+        if(!exist || exist.rows.length == 0) {
             return res.status(404).send({error: "User not found"});
         }
 
@@ -43,11 +43,14 @@ export async function register(req,res){
         // if(zodiac_sign === 'undefined') zodiac_sign = getZodiacSign(birthday);
 
         if (isUnique){
+            console.log("isUnique, password is: " + password)
             if(password){
-                bcrypt.hash(password, saltRounds, (err, hashedPassword) =>{
-                    pool.query(`INSERT INTO users (username, password, email) VALUES ('${username}','${hashedPassword}','${email}')`)
-                    console.log("Inserted data to database")
-                })
+                const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+                console.log("hashedPassword is: " + hashedPassword)
+
+                await pool.query(`INSERT INTO users (username, password, email) VALUES ('${username}','${hashedPassword}','${email}')`);
+                console.log("Inserted data to database")            
             }
             return res.status(200).send({msg: "User created successfully"});
         }
@@ -55,12 +58,12 @@ export async function register(req,res){
             return res.status(501).send({error: "Username or email already being taken"})
         }
     }catch(error){
-        return res.status(500).send(error.message);
+        return res.status(500).send({msg: error.message});
     }
 }
 
 export async function login(req,res){
-    console.log(req.body)
+    console.log("Login req: " + req.body)
     const {username, password} = req.body;
 
    try{
@@ -115,7 +118,7 @@ export async function getUser(req,res){
 
 export async function updateUser(req,res){
     try{
-        console.log("start updating")
+        console.log("===start updating")
         const userId = req.query.id;
         console.log(userId);
 
