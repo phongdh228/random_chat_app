@@ -38,6 +38,8 @@ export default function Hobby() {
     console.log(values.hobbies); //values.hobbies print out array of hobbies
     const selectedHobbies = hobbiesList.map(hobby => values.hobbies.includes(hobby) ? 1 : 0);
     console.log(selectedHobbies);
+    //var old_user_informations = localStorage.getItem('user_informations')
+
     //(23) [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0]
   };
 

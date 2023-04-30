@@ -119,15 +119,15 @@ export async function getUser(req,res){
 export async function updateUser(req,res){
     try{
         console.log("===start updating")
-        const userId = req.query.id;
-        console.log(userId);
-
+        const userId = res.user.userId;
+        
         if(userId){
-            const body = req.body;
+            console.log("user id is: " + userId);
+            console.log(req.body);
 
             const { username, password, email, fullname, birthday, is_male, is_active, place_of_birth, current_place, zodiac_sign } = req.body;
 
-            let queryCommand = 'UPDATE users SET';
+            let queryCommand = 'UPDATE users SET ';
             let numFieldsUpdated = 0;
 
             if (username !== undefined) {

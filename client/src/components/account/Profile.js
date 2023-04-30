@@ -30,12 +30,15 @@ export default function Profile() {
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async values =>{
-      let updatePromise = updateUser(values);
-      toast.promise(updatePromise,{
-        loading: 'Updating...',
-        success: <b>Update successfully</b>,
-        error: <b>Update failed</b>
-      });
+      localStorage.setItem('user_informations', values);
+      navigate('/hobby')
+      
+      
+      // toast.promise(updatePromise,{
+      //   loading: 'Updating...',
+      //   success: <b>Update successfully</b>,
+      //   error: <b>Update failed</b>
+      // });
     }
   })
 
