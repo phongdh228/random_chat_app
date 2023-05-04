@@ -123,71 +123,113 @@ export async function updateUser(req,res){
         
         if(userId){
             console.log("user id is: " + userId);
-            console.log(req.body);
+            //console.log(req.body);
 
-            const { username, password, email, fullname, birthday, is_male, is_active, place_of_birth, current_place, zodiac_sign } = req.body;
+            const { username, password, email, fullname, birthday, phone,  is_male, is_active, place_of_birth, address, match_point } = req.body;
 
             let queryCommand = 'UPDATE users SET ';
             let numFieldsUpdated = 0;
 
+            console.log("***CHECKPOINT01***")
+
             if (username !== undefined) {
                 queryCommand += ` username = '${username}'`;
                 numFieldsUpdated++;
+                console.log("***USERNAME***")
             }
 
             if (password !== undefined) {
                 const hashedPassword = bcrypt.hashSync(password, saltRounds);
                 queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} password = '${hashedPassword}'`;
                 numFieldsUpdated++;
+                console.log("***PASSWORD***")
+
             }
 
             if (email !== undefined) {
                 queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} email = '${email}'`;
                 numFieldsUpdated++;
+            console.log("***EMAIL***")
+
             }
 
             if (fullname !== undefined) {
                 queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} fullname = '${fullname}'`;
                 numFieldsUpdated++;
+            console.log("***FULLNAME***")
+
+            }
+
+            if (phone !== undefined) {
+                queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} phone = '${phone}'`;
+                numFieldsUpdated++;
+            console.log("***PHONE***")
+
             }
 
             if (birthday !== undefined) {
                 queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} birthday = '${birthday}'`;
                 numFieldsUpdated++;
+            console.log("***BIRTHDAY***")
+
             }
 
             if (is_male !== undefined) {
                 queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} is_male = ${is_male}`;
                 numFieldsUpdated++;
+            console.log("***MALE?***")
+
             }
 
             if (is_active !== undefined) {
                 queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} is_active = ${is_active}`;
                 numFieldsUpdated++;
+            console.log("***ACTIVE?***")
+
             }
 
             if (place_of_birth !== undefined) {
                 queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} place_of_birth = '${place_of_birth}'`;
                 numFieldsUpdated++;
+            console.log("***PLACEOFBIRTH***")
+
             }
 
-            if (current_place !== undefined) {
-                queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} current_place = '${current_place}'`;
+            if (address !== undefined) {
+                queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} address = '${address}'`;
                 numFieldsUpdated++;
-            }
+            console.log("***ADDRESS***")
 
+            }
+            let zodiac_sign = getZodiacSign(birthday)
+            console.log(zodiac_sign)
             if (zodiac_sign !== undefined) {
                 queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} zodiac_sign = '${zodiac_sign}'`;
                 numFieldsUpdated++;
+            console.log("***ZODIAC***")
+            }
+
+            if (match_point !== undefined) {
+                queryCommand += `${numFieldsUpdated > 0 ? ',' : ''} match_point = '{${match_point}}'`;
+                numFieldsUpdated++;
+            console.log("***MATCHPOINT***")
+
             }
 
             queryCommand += ` WHERE id = ${userId}`;
 
+            console.log("***CHECKPOINT02***")
+            console.log(queryCommand)
+
+
             pool.query(queryCommand)
             .then(() => {
+            console.log("***CHECKPOINT03***")
+
                 return res.status(200).send({msg: "Record updated successfully"})
             })
             .catch((error) => {
+                console.log("***CHECKPOINT04***")
                 return res.status(401).send(error.message);
             });
         }else{
@@ -302,42 +344,38 @@ async function findOneUserByUserName(username){
     return user.rows[0]
 }
 
-function getZodiacSign(birthday) {
-    const [year, month, day] = birthday.split('-').map(Number);
-    const date = new Date(year, month - 1, day);
+function getZodiacSign(dateString) {
+    const date = new Date(dateString);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
   
-    if (isNaN(date.getTime())) {
-        throw new Error('Invalid date');
-    }
-  
-    const monthDay = month * 100 + day;
-  
-    if (monthDay >= 321 && monthDay <= 419) {
-        return 'Aries';
-    } else if (monthDay >= 420 && monthDay <= 520) {
-        return 'Taurus';
-    } else if (monthDay >= 521 && monthDay <= 620) {
-        return 'Gemini';
-    } else if (monthDay >= 621 && monthDay <= 722) {
-        return 'Cancer';
-    } else if (monthDay >= 723 && monthDay <= 822) {
-        return 'Leo';
-    } else if (monthDay >= 823 && monthDay <= 922) {
-        return 'Virgo';
-    } else if (monthDay >= 923 && monthDay <= 1022) {
-        return 'Libra';
-    } else if (monthDay >= 1023 && monthDay <= 1121) {
-        return 'Scorpio';
-    } else if (monthDay >= 1122 && monthDay <= 1221) {
-        return 'Sagittarius';
-    } else if ((monthDay >= 1222 && monthDay <= 1231) || (monthDay >= 101 && monthDay <= 119)) {
-        return 'Capricorn';
-    } else if (monthDay >= 120 && monthDay <= 218) {
-        return 'Aquarius';
+    if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) {
+      return 'Aries';
+    } else if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) {
+      return 'Taurus';
+    } else if ((month === 5 && day >= 21) || (month === 6 && day <= 20)) {
+      return 'Gemini';
+    } else if ((month === 6 && day >= 21) || (month === 7 && day <= 22)) {
+      return 'Cancer';
+    } else if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) {
+      return 'Leo';
+    } else if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) {
+      return 'Virgo';
+    } else if ((month === 9 && day >= 23) || (month === 10 && day <= 22)) {
+      return 'Libra';
+    } else if ((month === 10 && day >= 23) || (month === 11 && day <= 21)) {
+      return 'Scorpio';
+    } else if ((month === 11 && day >= 22) || (month === 12 && day <= 21)) {
+      return 'Sagittarius';
+    } else if ((month === 12 && day >= 22) || (month === 1 && day <= 19)) {
+      return 'Capricorn';
+    } else if ((month === 1 && day >= 20) || (month === 2 && day <= 18)) {
+      return 'Aquarius';
     } else {
-        return 'Pisces';
+      return 'Pisces';
     }
-}
+  }
+  
 
 function convertMatchPointToString(matchPoint) {
     return matchPoint.join("");

@@ -1,5 +1,10 @@
 import React from "react";
+import {useNavigate} from 'react-router-dom';
 import { Formik, Form, Field } from "formik";
+import {profileValidation} from '../../helper/validate';
+import { useAuthStore } from '../../store/store';
+import { updateUser } from '../../helper/helper';
+
 
 const hobbiesList = [
   "Reading",
@@ -28,6 +33,7 @@ const hobbiesList = [
 ];
 
 export default function Hobby() {
+  const navigate = useNavigate();
 
   const initialValues = {
     hobbies: []
@@ -37,10 +43,23 @@ export default function Hobby() {
     // Handle form submission
     console.log(values.hobbies); //values.hobbies print out array of hobbies
     const selectedHobbies = hobbiesList.map(hobby => values.hobbies.includes(hobby) ? 1 : 0);
-    console.log(selectedHobbies);
-    //var old_user_informations = localStorage.getItem('user_informations')
-
     //(23) [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0]
+    console.log(selectedHobbies);
+
+    var user_informations = JSON.parse(localStorage.getItem('user_informations'));
+    console.log("====user_informations: " + user_informations)
+    // console.log(user_informations)
+    
+    
+    user_informations["match_point"] = selectedHobbies;
+    console.log("====user_informations: " + JSON.stringify(user_informations));
+    
+    localStorage.setItem('user_informations', JSON.stringify(user_informations));
+
+    updateUser((user_informations))
+
+    navigate('/home')
+
   };
 
   return (

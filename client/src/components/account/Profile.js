@@ -5,47 +5,39 @@ import toast, {Toaster} from 'react-hot-toast';
 import {useFormik} from 'formik';
 import useFetch from '../../hooks/fetch.hook';
 import {profileValidation} from '../../helper/validate';
+import DatePicker from 'react-datepicker';
 import covertToBase64 from '../../helper/convert';
 import { useAuthStore } from '../../store/store';
 import { updateUser } from '../../helper/helper';
 
+import 'react-datepicker/dist/react-datepicker.css';
 import styles from '../../styles/Username.module.css'
 import extend from '../../styles/Profile.module.css';
 
 export default function Profile() {
 
   const [{isLoading, apiData, serverError}] = useFetch();
+  const [gender, setGender] = useState('male');
   const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
       fullname: apiData?.fullname || '',
-      email: apiData?.email || '',
       phone: apiData?.phone || '',
       address: apiData?.address || '',
-      birthday: apiData?.birthday || ''
+      birthday: apiData?.birthday || null,
+      is_male: apiData?.gender || true
     },
     enableReinitialize : true,
-    validate: profileValidation,
+    //validate: profileValidation,
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async values =>{
-      localStorage.setItem('user_informations', values);
+      console.log(values)
+      localStorage.setItem('user_informations', JSON.stringify(values));
       navigate('/hobby')
-      
-      
-      // toast.promise(updatePromise,{
-      //   loading: 'Updating...',
-      //   success: <b>Update successfully</b>,
-      //   error: <b>Update failed</b>
-      // });
     }
   })
-
-  // const onUpload = async e =>{
-  //   const base64 = covertToBase64(e.target.files[0]);
-  //   setFile(base64);
-  // }
 
   function userLogout() {
     localStorage.removeItem('token');
@@ -82,13 +74,42 @@ export default function Profile() {
               </div> */}
                 <input {...formik.getFieldProps('fullname')} className={`${styles.textbox} ${extend.textbox}`} type="text" placeholder='Full Name'/>
 
-                <input {...formik.getFieldProps('birthday')} className={`${styles.textbox} ${extend.textbox}`} type="text" placeholder='Birthday'/>
+                <DatePicker
+                {...formik.getFieldProps('birthday')}
+                className={`${styles.textbox} ${extend.textbox}`}
+                placeholderText='Birthday'
+                selected={formik.values.birthday}
+                dateFormat='dd/MM/yyyy'
+                onChange={date => formik.setFieldValue('birthday', date)}
+              />
+
+              <div className='gender flex gap-10 py-2'>
+                <label>
+                  <input
+                    type='radio'
+                    value='male'
+                    checked={gender === 'male'}
+                    onChange={(e) => setGender(e.target.value)}
+                  />
+                  Male
+                </label>
+                <label>
+                  <input
+                    type='radio'
+                    value='female'
+                    checked={gender === 'female'}
+                    onChange={(e) => setGender(e.target.value)}
+                  />
+                  Female
+                </label>
+              </div>
+
 
               {/* <div className='name flex w-3/4 gap-10'>
               </div> */}
                 <input {...formik.getFieldProps('phone')} className={`${styles.textbox} ${extend.textbox}`} type="text" placeholder='Phone Number'/>
 
-                <input {...formik.getFieldProps('email')} className={`${styles.textbox} ${extend.textbox}`} type="text" placeholder='Email'/>
+                {/* <input {...formik.getFieldProps('email')} className={`${styles.textbox} ${extend.textbox}`} type="text" placeholder='Email'/> */}
 
               <input {...formik.getFieldProps('address')} className={`${styles.textbox} ${extend.textbox}`} type="text" placeholder='Address'/>
 
