@@ -1,8 +1,6 @@
 import React from "react";
 import {useNavigate} from 'react-router-dom';
 import { Formik, Form, Field } from "formik";
-import {profileValidation} from '../../helper/validate';
-import { useAuthStore } from '../../store/store';
 import { updateUser } from '../../helper/helper';
 
 

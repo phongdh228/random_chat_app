@@ -57,7 +57,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/video',
-    element: <div className={useStyles.wrapper}><Video></Video></div>
+    element: <ProtectedRoute><Video className={useStyles.wrapper} /></ProtectedRoute>
   },
   {
     path: '/hobby',
