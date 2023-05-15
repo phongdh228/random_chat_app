@@ -9,6 +9,6 @@
 }
 
 body{
-    background: #dcdce6;
+    background: linear-gradient(to bottom right, #CCFBFF, #EF96C5) no-repeat fixed;
     /* background-image: url('./assets/bg.jpg'); */
 }
