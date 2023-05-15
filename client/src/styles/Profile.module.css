@@ -9,3 +9,7 @@
 .textbox{
     @apply w-3/4;
 }
+
+.contentContainer {
+    background: rgba(255, 255, 255, 0.5);
+}
